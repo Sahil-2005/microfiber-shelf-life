@@ -1,0 +1,47 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Generated machine-learning artifacts
+models/*
+!models/.gitkeep
+results/*
+!results/.gitkeep
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and local databases
+*.log
+*.sqlite
+*.sqlite3
+
+# Operating system and editor files
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
