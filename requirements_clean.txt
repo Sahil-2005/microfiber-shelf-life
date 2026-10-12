@@ -43,5 +43,9 @@ threadpoolctl
 toml
 typing_extensions
 urllib3
+fastapi
+pydantic
+shap
+torch
 uvicorn
 websockets

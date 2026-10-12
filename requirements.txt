@@ -43,5 +43,9 @@ threadpoolctl==3.6.0
 toml==0.10.2
 typing_extensions==4.16.0
 urllib3==2.7.0
+fastapi>=0.100.0
+pydantic>=2.0.0
+shap>=0.40.0
+torch>=2.0.0
 uvicorn==0.52.4
 websockets==16.1.1
