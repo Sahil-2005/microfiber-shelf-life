@@ -8,25 +8,32 @@ window.MicrofiberAdapters.register({
   // ─── Page type detection ───────────────────────────────────
 
   isProductPage() {
-    // Amazon product pages: /dp/ASIN or /gp/product/ASIN
-    return /\/(dp|gp\/product)\/[A-Z0-9]{10}/i.test(window.location.pathname);
+    // Matches /dp/ASIN, /gp/product/ASIN, /gp/aw/d/ASIN, /product/ASIN, or ASIN DOM presence
+    const path = window.location.pathname;
+    const isAsinUrl = /\/(dp|gp\/product|gp\/aw\/d|product)\/([A-Z0-9]{10})/i.test(path) ||
+                      /\/([A-Z0-9]{10})(\/|\?|$)/i.test(path);
+    const hasProductDom = !!document.querySelector('#productTitle, #title, #centerCol, input[name="ASIN"], #ASIN');
+    return isAsinUrl || hasProductDom;
   },
 
   isListingPage() {
     const path = window.location.pathname;
     const search = window.location.search;
-    return path.startsWith('/s') || search.includes('k=') || path.includes('/s/');
+    return path.startsWith('/s') || search.includes('k=') || path.includes('/s/') || path.includes('/b/');
   },
 
   // ─── Product page extraction ───────────────────────────────
 
   getProductId() {
-    const match = window.location.pathname.match(/\/(dp|gp\/product)\/([A-Z0-9]{10})/i);
-    return match ? match[2] : null;
+    const asinInput = document.querySelector('input[name="ASIN"], #ASIN');
+    if (asinInput && asinInput.value) return asinInput.value;
+    const match = window.location.pathname.match(/\/(dp|gp\/product|gp\/aw\/d|product)\/([A-Z0-9]{10})/i) ||
+                  window.location.href.match(/([A-Z0-9]{10})/i);
+    return match ? (match[2] || match[1]) : null;
   },
 
   getProductTitle() {
-    const el = document.querySelector('#productTitle');
+    const el = document.querySelector('#productTitle, #title, h1.a-size-large, [data-automation-id="title"]');
     return el ? el.textContent.trim() : '';
   },
 
@@ -38,31 +45,32 @@ window.MicrofiberAdapters.register({
       '#productDetails_techSpec_section_1 tr, ' +
       '#productDetails_detailBullets_sections1 tr, ' +
       '.prodDetTable tr, ' +
-      '#detailBullets_feature_div li'
+      '#detailBullets_feature_div li, ' +
+      '#technicalSpecifications_section_1 tr, ' +
+      '.tech-spec-table tr'
     );
     for (const row of techRows) {
-      const header = row.querySelector('th, .prodDetSectionEntry, .a-text-bold');
-      if (header && /material|fabric|composition|fibre|fiber/i.test(header.textContent)) {
+      const header = row.querySelector('th, .prodDetSectionEntry, .a-text-bold, span:first-child');
+      if (header && /material|fabric|composition|fibre|fiber|blend/i.test(header.textContent)) {
         const value = row.querySelector('td, .prodDetAttrValue, span:last-child');
         if (value) sources.push(value.textContent.trim());
       }
     }
 
     // 2. "About this item" feature bullets
-    const bullets = document.querySelectorAll('#feature-bullets li .a-list-item');
+    const bullets = document.querySelectorAll('#feature-bullets li .a-list-item, #featurebullets_feature_div li');
     for (const bullet of bullets) {
       const text = bullet.textContent.trim();
-      if (/cotton|polyester|nylon|acrylic|silk|wool|linen|blend|fabric|gsm|weave/i.test(text)) {
+      if (/cotton|polyester|nylon|acrylic|silk|wool|linen|blend|fabric|gsm|weave|viscose|rayon|spandex/i.test(text)) {
         sources.push(text);
       }
     }
 
     // 3. Product description section
-    const descEl = document.querySelector('#productDescription');
+    const descEl = document.querySelector('#productDescription, #productDescription_feature_div');
     if (descEl) {
       const text = descEl.textContent.trim();
-      // Only include if it mentions fabric keywords
-      if (/cotton|polyester|nylon|acrylic|fabric|material|gsm/i.test(text)) {
+      if (/cotton|polyester|nylon|acrylic|fabric|material|gsm|blend/i.test(text)) {
         sources.push(text.slice(0, 1000));
       }
     }
@@ -82,20 +90,29 @@ window.MicrofiberAdapters.register({
 
   getProductDescription() {
     const el = document.querySelector(
-      '#productDescription, #feature-bullets, #aplus_feature_div'
+      '#productDescription, #feature-bullets, #aplus_feature_div, #productDescription_feature_div'
     );
     return el ? el.textContent.trim().slice(0, 2000) : '';
   },
 
   getBadgeAnchorElement() {
-    // Price display area — try several known selectors
+    // Price display area — robust multi-selector for Desktop, Mobile, and Responsive
     return document.querySelector(
       '#corePriceDisplay_desktop_feature_div, ' +
       '#corePrice_feature_div, ' +
+      '#corePriceDisplay_mobile_feature_div, ' +
+      '#corePrice_mobile_feature_div, ' +
+      '#apex_desktop, ' +
+      '#apex_mobile, ' +
+      '#apex_desktop .a-price, ' +
       '#priceblock_ourprice, ' +
       '#priceblock_dealprice, ' +
       '#price_inside_buybox, ' +
-      '#apex_desktop .a-price'
+      '#desktop_unifiedPrice, ' +
+      '#dealBadgeSupportingText, ' +
+      '.a-price, ' +
+      '#title_feature_div, ' +
+      '#productTitle'
     );
   },
 

@@ -66,6 +66,7 @@ This project delivers an end-to-end engineering solution:
 - **High-Throughput Asynchronous API:** FastAPI server with Pydantic v2 schemas and Scikit-Learn pipeline transforms for sub-millisecond inference.
 - **Interactive UI with Dynamic Visualizations:** React 19 + Recharts responsive dashboard plotting predicted release curves, shelf-life indicators, and feature importance charts.
 - **Zero-Friction Cross-Platform Compatibility:** Runs identically on macOS (Apple Silicon M-series & Intel), Windows 10/11 (PowerShell & Command Prompt), and Linux distributions.
+- **🛒 Chrome Browser Extension (Manifest V3):** Real-time shopping assistant that extracts fabric specs on Amazon, Myntra, and custom stores, injects an isolated Shadow DOM **A–E Grade badge**, provides an interactive **50-wash lifecycle curve** with wash habit simulation sliders, and estimates cart-level microplastic impact. See [extension/README.md](file:///c:/Users/sahil/Desktop/7th%20sem/AML/microfiber-shelf-life/extension/README.md).
 
 ---
 

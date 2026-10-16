@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoThread Apparel — Sustainable Textiles Demo Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #ccfbf1;
+      --slate-900: #0f172a;
+      --slate-800: #1e293b;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --slate-50: #f8fafc;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--slate-50);
+      color: var(--slate-800);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Test Banner */
+    .test-banner {
+      background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+      color: #94a3b8;
+      font-size: 13px;
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .test-banner strong { color: #38bdf8; }
+    .test-banner .status-pill {
+      background: rgba(13, 148, 136, 0.2);
+      color: #2dd4bf;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #2dd4bf;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* Navbar */
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--slate-200);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .logo {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--slate-900);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-badge {
+      background: var(--primary);
+      color: #fff;
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--slate-600);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: color 0.15s;
+      cursor: pointer;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--primary);
+    }
+    .cart-btn {
+      position: relative;
+      background: var(--slate-100);
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--slate-800);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .cart-btn:hover {
+      background: var(--slate-200);
+    }
+    .cart-count {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 9999px;
+    }
+
+    /* Container */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 36px 24px 60px;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* Hero */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #fff;
+      border-radius: 20px;
+      padding: 44px 40px;
+      margin-bottom: 36px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .hero h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+    .hero p {
+      color: #94a3b8;
+      max-width: 600px;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+    .hero-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .hero-tag {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(4px);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    /* Product Grid */
+    .grid-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+    }
+    .product-card {
+      background: #fff;
+      border: 1px solid var(--slate-200);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: #cbd5e1;
+    }
+    .card-img {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 8px;
+    }
+    .card-material {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--slate-900);
+      line-height: 1.35;
+    }
+    .card-specs {
+      font-size: 12px;
+      color: var(--slate-500);
+      margin-bottom: 8px;
+    }
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid var(--slate-100);
+    }
+    .card-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--slate-900);
+    }
+    .card-btn {
+      background: var(--slate-100);
+      color: var(--slate-800);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .card-btn:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Product Detail Page View */
+    .pdp-view {
+      display: none;
+      background: #fff;
+      border-radius: 20px;
+      border: 1px solid var(--slate-200);
+      padding: 36px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 40px;
+    }
+    .pdp-view.active {
+      display: block;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--slate-600);
+      font-weight: 600;
+      font-size: 14px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-bottom: 24px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      background: var(--slate-100);
+    }
+    .back-btn:hover {
+      color: var(--slate-900);
+      background: var(--slate-200);
+    }
+    .pdp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 40px;
+    }
+    .pdp-img-wrap {
+      border-radius: 16px;
+      overflow: hidden;
+      height: 420px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--slate-200);
+    }
+    .pdp-info {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pdp-tag {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: var(--primary);
+    }
+    .pdp-title {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--slate-900);
+      line-height: 1.25;
+    }
+    .pdp-price {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--slate-900);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .pdp-specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .pdp-specs-table th, .pdp-specs-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--slate-100);
+      text-align: left;
+    }
+    .pdp-specs-table th {
+      color: var(--slate-500);
+      width: 35%;
+      font-weight: 600;
+    }
+    .pdp-specs-table td {
+      color: var(--slate-800);
+      font-weight: 600;
+    }
+    .pdp-desc {
+      font-size: 14px;
+      color: var(--slate-600);
+      line-height: 1.6;
+    }
+    .add-to-cart-btn {
+      background: var(--slate-900);
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+    .add-to-cart-btn:hover {
+      background: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    /* Cart Modal */
+    .cart-drawer {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
+    .cart-drawer.open {
+      display: flex;
+    }
+    .cart-panel {
+      width: 440px;
+      max-width: 90vw;
+      height: 100vh;
+      background: #fff;
+      box-shadow: var(--shadow-xl);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      animation: slideIn 0.3s ease;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--slate-200);
+    }
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      border: 1px solid var(--slate-200);
+      border-radius: 10px;
+      background: var(--slate-50);
+    }
+    .cart-item-title {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--slate-900);
+    }
+
+    /* Footer */
+    footer {
+      background: #fff;
+      border-top: 1px solid var(--slate-200);
+      padding: 28px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--slate-500);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Test Context Banner -->
+  <div class="test-banner">
+    <div>
+      <strong>🔬 Microfiber Score Chrome Extension Test Environment</strong> — Load unpacked <code style="background:rgba(255,255,255,0.1);padding:2px 6px;border-radius:4px;">extension/</code> in Chrome to test badge injection.
+    </div>
+    <div class="status-pill">
+      <span class="status-dot"></span>
+      Backend API: http://127.0.0.1:8000
+    </div>
+  </div>
+
+  <!-- Navigation Header -->
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo" id="home-link">
+        <span class="logo-badge">🧵</span>
+        EcoThread Apparel
+      </a>
+      <ul class="nav-links">
+        <li><a class="active" id="nav-all">All Products</a></li>
+        <li><a id="nav-natural">Natural Fibers</a></li>
+        <li><a id="nav-synthetics">Synthetics</a></li>
+        <li><a id="nav-blends">Blends</a></li>
+      </ul>
+      <button class="cart-btn" id="open-cart-btn">
+        🛒 Cart
+        <span class="cart-count" id="cart-counter">2</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Header -->
+    <div class="hero" id="hero-banner">
+      <h1>Sustainable Fashion with Physics-Backed Microfiber Ratings</h1>
+      <p>Every clothing item sheds tiny microfibers during domestic laundering. Shop consciously with our automated AI & deep-learning lifecycle ratings.</p>
+      <div class="hero-tags">
+        <span class="hero-tag">🌿 100% Cotton (Low Shed)</span>
+        <span class="hero-tag">⚠️ Recycled Synthetics</span>
+        <span class="hero-tag">🔬 LSTM 50-Wash Model</span>
+      </div>
+    </div>
+
+    <!-- Product Detail Page (PDP) View -->
+    <div class="pdp-view" id="pdp-view">
+      <button class="back-btn" id="back-to-shop-btn">← Back to All Products</button>
+
+      <div class="pdp-grid" data-mf-product="" id="pdp-wrapper">
+        <div class="pdp-img-wrap" id="pdp-img-container">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="pdp-info">
+          <span class="pdp-tag" id="pdp-category-tag">SUSTAINABLE COLLECTION</span>
+          <h1 class="pdp-title" id="pdp-title" data-mf-title="">Loading...</h1>
+
+          <!-- Price Anchor for Microfiber Score Badge Injection -->
+          <div class="pdp-price" id="pdp-price-anchor" data-mf-price="">
+            <span id="pdp-price">$48.00</span>
+            <span style="font-size:14px;color:#16a34a;font-weight:600;">In Stock</span>
+          </div>
+
+          <!-- Product Technical Specifications Table -->
+          <table class="pdp-specs-table">
+            <tbody>
+              <tr>
+                <th>Composition / Material</th>
+                <td id="pdp-material" data-mf-material="">100% Organic Cotton</td>
+              </tr>
+              <tr>
+                <th>Fabric Weight</th>
+                <td id="pdp-gsm">180 GSM (Medium Weight)</td>
+              </tr>
+              <tr>
+                <th>Weave Construction</th>
+                <td id="pdp-weave">Plain Weave Jersey</td>
+              </tr>
+              <tr>
+                <th>Yarn Count</th>
+                <td id="pdp-yarn">30s Combed Ne</td>
+              </tr>
+              <tr>
+                <th>Recommended Care</th>
+                <td>Machine wash cold 20°C, gentle tumble dry</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="pdp-desc" id="pdp-description" data-mf-description="">
+            Crafted for everyday comfort and ecological durability.
+          </p>
+
+          <button class="add-to-cart-btn" id="pdp-add-btn">
+            🛍️ Add to Cart & Test Cart Impact
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Listing Grid View -->
+    <div id="listing-view">
+      <div class="grid-title">
+        <span>Featured Garments (6 Diverse Compositions)</span>
+        <span style="font-size:13px;color:var(--slate-500);font-weight:500;">Search Results & Badging Test</span>
+      </div>
+
+      <div class="product-grid" id="product-grid">
+        <!-- Products populated via JS -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Cart Modal / Checkout Drawer -->
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-panel">
+      <div class="cart-header">
+        <h2>Your Shopping Cart</h2>
+        <button id="close-cart-btn" style="background:none;border:none;font-size:18px;cursor:pointer;">✕</button>
+      </div>
+
+      <!-- Microfiber Cart Summary Host Element -->
+      <div class="cart-items" id="cart-items-list">
+        <div class="cart-item">
+          <div>
+            <div class="cart-item-title sc-product-title">Pure Earth 100% Organic Cotton Everyday Tee</div>
+            <div style="font-size:12px;color:var(--slate-500);">140 GSM · Plain Weave · 100% Cotton</div>
+          </div>
+          <div style="font-weight:700;">$38.00</div>
+        </div>
+
+        <div class="cart-item">
+          <div>
+            <div class="cart-item-title sc-product-title">ArcticSummit Thermal Recycled Fleece Jacket</div>
+            <div style="font-size:12px;color:var(--slate-500);">320 GSM · 100% Recycled Polyester</div>
+          </div>
+          <div style="font-weight:700;">$110.00</div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid var(--slate-200);padding-top:16px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-weight:700;font-size:16px;">Subtotal</span>
+        <span style="font-weight:800;font-size:20px;color:var(--slate-900);">$148.00</span>
+      </div>
+
+      <button class="add-to-cart-btn" style="margin-top:16px;" onclick="alert('Demo store checkout test. Notice the Microfiber Basket Impact summary banner injected above!');">
+        Proceed to Checkout
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <p>EcoThread Apparel Co. · Test Harness for Microfiber Shelf-Life Chrome Extension</p>
+    <p style="margin-top:6px;font-size:12px;color:#94a3b8;">Compatible with Manifest V3 Shadow DOM badge injection on Amazon, Myntra, and Demo Shop adapters.</p>
+  </footer>
+
+  <script>
+    // 6 Varied Garments for comprehensive test coverage
+    const PRODUCTS = [
+      {
+        id: "prod-cotton-01",
+        category: "natural",
+        title: "Pure Earth 100% Organic Cotton Everyday Tee",
+        material: "100% Organic Cotton",
+        gsm: "140 GSM (Lightweight)",
+        weave: "Plain Weave Jersey",
+        yarn: "32s Single Jersey",
+        price: "$38.00",
+        expectedGrade: "A",
+        bgGrad: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)",
+        icon: "🌿",
+        desc: "Ultra-soft single jersey knit crafted from 100% GOTS-certified organic cotton. Grown without chemical pesticides and dyed with low-impact botanical dyes. Highly biodegradable cellulosic fibers."
+      },
+      {
+        id: "prod-nylon-02",
+        category: "synthetics",
+        title: "AeroTech Lightweight Performance Shell Jacket",
+        material: "100% Ripstop Nylon",
+        gsm: "160 GSM (Medium Shell)",
+        weave: "Plain Weave",
+        yarn: "40D High-Tenacity Polyamide",
+        price: "$89.00",
+        expectedGrade: "B",
+        bgGrad: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)",
+        icon: "💨",
+        desc: "Engineered for trail running and foul-weather training. Dense nylon ripstop weave protects against wind and light precipitation while minimizing loose filament shedding."
+      },
+      {
+        id: "prod-blend-03",
+        category: "blends",
+        title: "Urban Comfort Poly-Cotton Athletic Hoodie",
+        material: "60% Cotton 40% Polyester Blend",
+        gsm: "240 GSM (Medium-Heavy Fleece)",
+        weave: "Plain Weave Knit",
+        yarn: "24s French Terry",
+        price: "$68.00",
+        expectedGrade: "C / D",
+        bgGrad: "linear-gradient(135deg, #fef9c3 0%, #fef08a 100%)",
+        icon: "🧥",
+        desc: "Classic comfort fit with plush interior fleece. Poly-cotton fiber blend balances cotton hand-feel with synthetic crease resistance. Moderate microplastic shedding during warm wash cycles."
+      },
+      {
+        id: "prod-fleece-04",
+        category: "synthetics",
+        title: "ArcticSummit Thermal Recycled Fleece Jacket",
+        material: "100% Recycled Polyester Fleece",
+        gsm: "320 GSM (Heavyweight Sherpa)",
+        weave: "Plain Weave",
+        yarn: "150D Low-Twist Microfiber",
+        price: "$110.00",
+        expectedGrade: "E (High Shed)",
+        bgGrad: "linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)",
+        icon: "❄️",
+        desc: "Maximum insulation for sub-zero alpine conditions. High-pile brushed sherpa construction prone to substantial loose microplastic fiber release during domestic machine laundering."
+      },
+      {
+        id: "prod-acrylic-05",
+        category: "synthetics",
+        title: "Nordic Heritage Chunky Cable Knit Sweater",
+        material: "100% Acrylic Soft-Spun Yarn",
+        gsm: "280 GSM (Heavy Knit)",
+        weave: "Plain Weave",
+        yarn: "18s Staple Spun Acrylic",
+        price: "$75.00",
+        expectedGrade: "D / E",
+        bgGrad: "linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%)",
+        icon: "🧶",
+        desc: "Timeless ribbed cable pattern mimicking traditional wool. Synthetic acrylic staple fibers experience mechanical breakage and release non-biodegradable particles in agitation cycles."
+      },
+      {
+        id: "prod-linen-06",
+        category: "natural",
+        title: "Artisan European Twill Summer Linen Shirt",
+        material: "100% Organic Linen",
+        gsm: "160 GSM (Breathable Twill)",
+        weave: "Twill Weave",
+        yarn: "28s Wet-Spun Flax",
+        price: "$84.00",
+        expectedGrade: "A",
+        bgGrad: "linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)",
+        icon: "🌾",
+        desc: "Naturally cooling European flax in a tailored twill structure. Flax fibers are robust, natural, and 100% home-compostable, delivering our highest ecological rating."
+      }
+    ];
+
+    // DOM Elements
+    const listingView = document.getElementById('listing-view');
+    const pdpView     = document.getElementById('pdp-view');
+    const heroBanner  = document.getElementById('hero-banner');
+    const productGrid = document.getElementById('product-grid');
+
+    const pdpWrapper   = document.getElementById('pdp-wrapper');
+    const pdpImgBox   = document.getElementById('pdp-img-container');
+    const pdpTitle    = document.getElementById('pdp-title');
+    const pdpPrice    = document.getElementById('pdp-price');
+    const pdpMaterial = document.getElementById('pdp-material');
+    const pdpGsm      = document.getElementById('pdp-gsm');
+    const pdpWeave    = document.getElementById('pdp-weave');
+    const pdpYarn     = document.getElementById('pdp-yarn');
+    const pdpDesc     = document.getElementById('pdp-description');
+
+    const cartDrawer  = document.getElementById('cart-drawer');
+    const openCartBtn = document.getElementById('open-cart-btn');
+    const closeCartBtn = document.getElementById('close-cart-btn');
+
+    // Render Product Cards
+    function renderCards(filter = 'all') {
+      productGrid.innerHTML = '';
+      const filtered = filter === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+
+      filtered.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.dataset.mfProductCard = p.id;
+
+        card.innerHTML = `
+          <div class="card-img" style="background:${p.bgGrad};">
+            <span style="font-size:72px;">${p.icon}</span>
+          </div>
+          <div class="card-body">
+            <span class="card-material" data-mf-card-material="">${p.material}</span>
+            <h3 class="card-title" data-mf-card-title="">${p.title}</h3>
+            <p class="card-specs">${p.gsm} · ${p.weave}</p>
+            <div class="card-bottom">
+              <span class="card-price" data-mf-card-price="">${p.price}</span>
+              <button class="card-btn">View Specs</button>
+            </div>
+          </div>
+        `;
+
+        card.addEventListener('click', () => openPDP(p));
+        productGrid.appendChild(card);
+      });
+    }
+
+    // Open Product Detail Page
+    function openPDP(p) {
+      pdpWrapper.dataset.mfProduct = p.id;
+      pdpImgBox.style.background = p.bgGrad;
+      pdpImgBox.innerHTML = `<span style="font-size:120px;">${p.icon}</span>`;
+      pdpTitle.textContent = p.title;
+      pdpPrice.textContent = p.price;
+      pdpMaterial.textContent = p.material;
+      pdpGsm.textContent = p.gsm;
+      pdpWeave.textContent = p.weave;
+      pdpYarn.textContent = p.yarn;
+      pdpDesc.textContent = p.desc;
+
+      heroBanner.style.display = 'none';
+      listingView.style.display = 'none';
+      pdpView.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Notify extension if content script already loaded
+      window.dispatchEvent(new CustomEvent('mf:pagechange', { detail: { id: p.id } }));
+    }
+
+    // Back to shop
+    function closePDP() {
+      pdpView.classList.remove('active');
+      heroBanner.style.display = 'block';
+      listingView.style.display = 'block';
+    }
+
+    document.getElementById('back-to-shop-btn').addEventListener('click', closePDP);
+    document.getElementById('home-link').addEventListener('click', (e) => { e.preventDefault(); closePDP(); });
+
+    // Filter tabs
+    const navItems = [
+      { el: document.getElementById('nav-all'), filter: 'all' },
+      { el: document.getElementById('nav-natural'), filter: 'natural' },
+      { el: document.getElementById('nav-synthetics'), filter: 'synthetics' },
+      { el: document.getElementById('nav-blends'), filter: 'blends' }
+    ];
+
+    navItems.forEach(item => {
+      item.el.addEventListener('click', () => {
+        navItems.forEach(n => n.el.classList.remove('active'));
+        item.el.classList.add('active');
+        closePDP();
+        renderCards(item.filter);
+      });
+    });
+
+    // Cart Drawer Toggle
+    openCartBtn.addEventListener('click', () => cartDrawer.classList.add('open'));
+    closeCartBtn.addEventListener('click', () => cartDrawer.classList.remove('open'));
+    cartDrawer.addEventListener('click', (e) => {
+      if (e.target === cartDrawer) cartDrawer.classList.remove('open');
+    });
+
+    // Initial render
+    renderCards('all');
+  </script>
+</body>
+</html>

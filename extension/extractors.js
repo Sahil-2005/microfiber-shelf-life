@@ -9,7 +9,7 @@ window.MicrofiberExtractors = {
   // ─── Known fabric types (order matters: longer matches first) ────
   FABRIC_TYPES: [
     'cotton-poly blend', 'cotton-polyester blend', 'cotton polyester',
-    'poly-cotton', 'polycotton',
+    'poly-cotton', 'polycotton', 'cotton blend', 'poly blend', 'cotton rich', 'rich cotton',
     'polyester', 'cotton', 'nylon', 'acrylic', 'silk', 'wool',
     'linen', 'rayon', 'viscose', 'spandex', 'lycra', 'elastane',
     'microfiber', 'fleece', 'denim', 'modal', 'tencel', 'hemp'
@@ -149,9 +149,9 @@ window.MicrofiberExtractors = {
     if (!raw) return null;
     const r = raw.toLowerCase().trim();
 
-    if (/poly-?cotton|cotton.?poly|polycotton/.test(r)) return 'Cotton-Poly Blend';
-    if (/cotton/.test(r))    return 'Cotton';
+    if (/poly-?cotton|cotton.?poly|polycotton|cotton\s*blend|poly\s*blend|cotton\s*rich|rich\s*cotton/.test(r)) return 'Cotton-Poly Blend';
     if (/polyester/.test(r)) return 'Polyester';
+    if (/cotton/.test(r))    return 'Cotton';
     if (/nylon/.test(r))     return 'Nylon';
     if (/acrylic/.test(r))   return 'Acrylic';
     // Map similar synthetics to closest model category
