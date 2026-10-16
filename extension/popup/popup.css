@@ -1,0 +1,227 @@
+/* popup.css — Popup styles for Microfiber Score extension */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  width: 340px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  color: #1e293b;
+  background: #fff;
+}
+
+.popup { padding: 0; }
+
+/* ── Header ─────────────────────────────────────── */
+
+.popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+  color: #fff;
+}
+
+.popup-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.popup-icon { font-size: 22px; }
+.popup-brand h1 {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.popup-version {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.popup-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.status-dot.online  { background: #4ade80; box-shadow: 0 0 0 3px rgba(74,222,128,0.3); }
+.status-dot.offline { background: #f87171; box-shadow: 0 0 0 3px rgba(248,113,113,0.3); }
+
+.status-text { color: rgba(255,255,255,0.85); }
+
+/* ── Sections ───────────────────────────────────── */
+
+.popup-section {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+.popup-section h2 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #475569;
+  margin-bottom: 4px;
+}
+.section-hint {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+/* ── Toggle ─────────────────────────────────────── */
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+.toggle-row input[type="checkbox"] { display: none; }
+.toggle-slider {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: #cbd5e1;
+  border-radius: 11px;
+  transition: background 0.2s;
+}
+.toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.toggle-row input:checked + .toggle-slider { background: #0d9488; }
+.toggle-row input:checked + .toggle-slider::after { transform: translateX(18px); }
+
+/* ── Fields ─────────────────────────────────────── */
+
+.field {
+  margin-bottom: 12px;
+}
+.field:last-child { margin-bottom: 0; }
+.field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 5px;
+}
+
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.range-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  outline: none;
+}
+.range-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0d9488;
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.range-val {
+  min-width: 36px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+select, input[type="text"] {
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  color: #1e293b;
+  background: #f8fafc;
+  outline: none;
+}
+select:focus, input[type="text"]:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13,148,136,0.15);
+}
+
+/* ── Save button ────────────────────────────────── */
+
+.save-btn {
+  width: 100%;
+  padding: 9px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.save-btn:hover { opacity: 0.9; }
+.save-btn:active { opacity: 0.8; }
+
+.save-status {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── Advanced ───────────────────────────────────── */
+
+.advanced-section details summary {
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+.advanced-section details[open] summary { color: #64748b; }
+
+/* ── Footer ─────────────────────────────────────── */
+
+.popup-footer {
+  padding: 10px 18px;
+  text-align: center;
+  font-size: 10px;
+  color: #94a3b8;
+}
+.popup-footer a {
+  color: #0d9488;
+  text-decoration: none;
+}
+.popup-footer a:hover { text-decoration: underline; }

@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Microfiber Score",
+  "version": "1.0.0",
+  "description": "Shows a Microfiber Score badge (A–E) on shopping pages to help you make sustainable textile choices. Powered by a physics-grounded LSTM deep-learning model.",
+
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": [
+    "http://127.0.0.1:8000/*",
+    "http://localhost:8000/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.amazon.in/*",
+        "*://*.amazon.com/*",
+        "*://*.myntra.com/*",
+        "http://localhost:*/*",
+        "http://127.0.0.1:*/*"
+      ],
+      "js": [
+        "adapters/base.js",
+        "adapters/amazon.js",
+        "adapters/myntra.js",
+        "adapters/demo-shop.js",
+        "extractors.js",
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
