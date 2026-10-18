@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Microfiber Score</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="popup-brand">
+        <span class="popup-icon">🧵</span>
+        <div>
+          <h1>Microfiber Score</h1>
+          <p class="popup-version">v1.0.0</p>
+        </div>
+      </div>
+      <div class="popup-status" id="api-status">
+        <span class="status-dot offline"></span>
+        <span class="status-text">Checking…</span>
+      </div>
+    </header>
+
+    <!-- Toggle -->
+    <section class="popup-section">
+      <label class="toggle-row">
+        <span>Extension enabled</span>
+        <input type="checkbox" id="toggle-enabled" checked>
+        <span class="toggle-slider"></span>
+      </label>
+    </section>
+
+    <!-- Default wash settings -->
+    <section class="popup-section">
+      <h2>Default Wash Habits</h2>
+      <p class="section-hint">These defaults are used when scoring products.</p>
+
+      <div class="field">
+        <label for="wash-temp">Temperature</label>
+        <div class="range-row">
+          <input type="range" id="wash-temp" min="20" max="60" step="5" value="40">
+          <span class="range-val" id="wash-temp-val">40°C</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="wash-agit">Agitation</label>
+        <div class="range-row">
+          <input type="range" id="wash-agit" min="0.5" max="1.5" step="0.1" value="1.0">
+          <span class="range-val" id="wash-agit-val">1.0</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="wash-detergent">Detergent</label>
+        <select id="wash-detergent">
+          <option value="Standard">Standard</option>
+          <option value="Enzyme">Enzyme</option>
+          <option value="Eco">Eco</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="wash-freq">Washes / month</label>
+        <div class="range-row">
+          <input type="range" id="wash-freq" min="1" max="12" step="1" value="4">
+          <span class="range-val" id="wash-freq-val">4</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Advanced -->
+    <section class="popup-section advanced-section">
+      <details>
+        <summary>Advanced</summary>
+        <div class="field" style="margin-top:10px;">
+          <label for="api-url">Backend URL</label>
+          <input type="text" id="api-url" value="http://127.0.0.1:8000" spellcheck="false">
+        </div>
+      </details>
+    </section>
+
+    <!-- Save -->
+    <section class="popup-section">
+      <button id="save-btn" class="save-btn">Save Settings</button>
+      <span class="save-status" id="save-status"></span>
+    </section>
+
+    <footer class="popup-footer">
+      Powered by LSTM Deep Learning · <a href="https://github.com/Sahil-2005/microfiber-shelf-life" target="_blank">GitHub</a>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
