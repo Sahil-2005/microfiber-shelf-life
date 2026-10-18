@@ -8,11 +8,12 @@
 [![React](https://img.shields.io/badge/React-19.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Chrome Extension](https://img.shields.io/badge/Chrome_Extension-Manifest_V3-4285F4?style=for-the-badge&logo=googlechrome&logoColor=white)](file:///extension/README.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**An end-to-end, physics-grounded Deep Learning system and full-stack decision-support dashboard for forecasting textile microplastic shedding trajectories and garment functional shelf-life across 50 continuous laundering cycles.**
+**An end-to-end, physics-grounded Deep Learning system and full-stack decision-support platform for forecasting textile microplastic shedding trajectories, garment functional shelf-life across 50 continuous laundering cycles, and live e-commerce sustainability scoring via Chrome Extension.**
 
-[Key Features](#-key-features) • [Problem & Science](#-the-problem--environmental-science) • [Mathematical Modeling](#-mathematical--physical-framework) • [Architecture](#-system-architecture) • [Cross-Platform Setup](#-cross-platform-installation--setup-mac--windows) • [API Reference](#-api-specification--endpoints) • [Model Pipeline](#-data-generation--model-pipeline)
+[Key Features](#-key-features) • [Problem & Science](#-the-problem--environmental-science) • [Mathematical Modeling](#-mathematical--physical-framework) • [Architecture](#-system-architecture) • [Cross-Platform Setup](#-cross-platform-installation--setup-guide) • [Chrome Extension](#-chrome-browser-extension-manifest-v3) • [API Reference](#-api-specification--endpoints) • [Demo Store](#-local-demo-store--testing) • [Testing](#-automated-testing-suite)
 
 </div>
 
@@ -24,49 +25,69 @@
 2. [Key Features](#-key-features)
 3. [The Problem & Environmental Science](#-the-problem--environmental-science)
 4. [Mathematical & Physical Framework](#-mathematical--physical-framework)
-5. [Machine Learning Architecture (PyTorch LSTM vs. Classical ML)](#-machine-learning-architecture)
+5. [Machine Learning Architecture (PyTorch LSTM)](#-machine-learning-architecture)
 6. [Explainable AI (SHAP DeepExplainer)](#-explainable-ai-shap)
 7. [System Architecture](#-system-architecture)
 8. [Repository Directory Structure](#-repository-directory-structure)
-9. [Cross-Platform Installation & Setup (Mac & Windows)](#-cross-platform-installation--setup-mac--windows)
+9. [Cross-Platform Installation & Setup Guide](#-cross-platform-installation--setup-guide)
    - [Prerequisites](#prerequisites)
    - [Step 1: Clone the Repository](#step-1-clone-the-repository)
    - [Step 2: Backend Setup (Python Virtual Environment)](#step-2-backend-setup-python-virtual-environment)
-   - [Step 3: Frontend Setup (React & Vite)](#step-3-frontend-setup-react--vite)
+   - [Step 3: Frontend Dashboard Setup (React & Vite)](#step-3-frontend-dashboard-setup-react--vite)
    - [Step 4: Running the Applications Locally](#step-4-running-the-applications-locally)
-10. [API Specification & Endpoints](#-api-specification--endpoints)
-11. [Data Generation & Model Retraining Workflow](#-data-generation--model-retraining-workflow)
-12. [Frontend Dashboard Features](#-frontend-dashboard-features)
-13. [Troubleshooting & FAQs](#-troubleshooting--faqs)
-14. [Author & Acknowledgments](#-author)
+10. [Chrome Browser Extension (Manifest V3)](#-chrome-browser-extension-manifest-v3)
+    - [How It Works](#how-the-extension-works)
+    - [Step-by-Step Installation in Chrome / Edge / Brave](#step-by-step-installation-in-chrome--edge--brave)
+    - [Testing on Live E-Commerce (Amazon & Myntra)](#testing-on-live-e-commerce-amazon--myntra)
+11. [Local Demo Store & Testing](#-local-demo-store--testing)
+12. [API Specification & Endpoints](#-api-specification--endpoints)
+    - [`GET /` Health Check](#1-root-health-check)
+    - [`POST /score` Full Microfiber Rating & Curve](#2-score-endpoint-comprehensive-garment-rating)
+    - [`POST /extract` Composition & Spec Parser](#3-extract-endpoint-textile-property-extractor)
+    - [`POST /predict` Single Cycle Prediction](#4-predict-release-at-target-wash-cycle)
+    - [`POST /shelf-life` 50-Wash Sequence & Threshold](#5-estimate-complete-50-wash-trajectory--shelf-life)
+13. [Automated Testing Suite](#-automated-testing-suite)
+14. [Data Generation & Retraining Pipeline](#-data-generation--model-retraining-workflow)
+15. [Frontend Dashboard Features](#-frontend-dashboard-features)
+16. [Troubleshooting & FAQs](#-troubleshooting--faqs)
+17. [Author & Acknowledgments](#-author)
 
 ---
 
 ## 🔬 Project Overview
 
-Synthetic textiles (polyester, nylon, acrylic) shed hundreds of thousands of microscopic plastic fibers during machine laundering. These **microfibers** slip through wastewater filtration facilities into marine ecosystems, bioaccumulating in aquatic food chains and eventually reaching drinking water and human consumption.
+Synthetic textiles (polyester, nylon, acrylic) shed hundreds of thousands of microscopic plastic fibers during home laundering. These **microfibers** slip through wastewater filtration facilities into marine ecosystems, bioaccumulate in marine life, and enter drinking water supplies.
 
-Traditional textile evaluation methods treat microfiber shedding as an **isolated snapshot event** or static regression problem. However, physical fabric degradation is inherently **sequential and path-dependent**: early washes shed loose surface debris, while successive washings subject polymer yarns to mechanical shear, hydrothermal stress, and chemical weakening, altering shedding rates over time.
+Traditional textile evaluation treats microfiber release as an **isolated snapshot event** or simple regression. In reality, textile degradation is **path-dependent and sequential**: early wash cycles release superficial loose debris, while repeated laundering subjects polymer yarns to continuous mechanical shear, thermal agitation, and chemical detergent stress.
 
-This project delivers an end-to-end engineering solution:
-- **Synthetic Sequence Simulator:** Generates realistic 50-wash lifecycle trajectories based on physical principles (exponential decay + progressive structural wear).
-- **Deep Recurrent Modeling (PyTorch LSTM):** Ingests textile properties and laundering parameters to model fiber release over a 50-wash sequence with internal hidden-state accumulation.
-- **Shelf-Life Estimation:** Automatically detects when fiber release crosses defined degradation thresholds (e.g., $20\,\text{mg}$ limit), providing manufacturers and consumers with an actionable garment longevity metric.
-- **Explainable AI (SHAP DeepExplainer):** Deconstructs the black-box neural network to reveal exact feature attributions across wash sequences.
+This project provides an end-to-end engineering solution:
+- **Synthetic Sequence Simulator:** Generates realistic 50-wash lifecycle trajectories based on physical principles (exponential surface washout + cumulative structural wear).
+- **Deep Recurrent Modeling (PyTorch LSTM):** Ingests textile properties and laundering parameters to model fiber release across 50 consecutive wash cycles using internal hidden-state accumulation.
+- **Shelf-Life Estimation:** Automatically detects when fiber release crosses defined degradation thresholds ($20\,\text{mg}$ limit), providing an actionable garment durability metric.
+- **Explainable AI (SHAP DeepExplainer):** Deconstructs the neural network to reveal exact feature attributions across wash sequences.
 - **Production Full-Stack Application:** High-performance asynchronous **FastAPI** backend coupled with a modern **React 19 / Vite** interactive dashboard.
+- **Chrome Browser Extension (Manifest V3):** Real-time shopping assistant that extracts garment specs on live e-commerce sites (Amazon, Myntra, and custom stores), injecting an isolated **Shadow DOM A–E Grade badge**, an interactive **50-wash lifecycle curve**, **wash habit simulator sliders**, and **basket microplastic impact** calculators.
 
 ---
 
 ## ✨ Key Features
 
 - **Sequential Degradation Modeling:** Replaces static regression with a 2-layer Long Short-Term Memory (LSTM) network capable of remembering structural wear history.
-- **Physics-Inspired Dual-Phase Simulation:** Incorporates both exponential decay (initial loose-fiber shedding) and cumulative mechanical wear.
-- **Garment Shelf-Life Calculator:** Predicts the exact wash cycle where the garment reaches its operational microfiber threshold ($20\,\text{mg}$).
-- **Transparent Explainability (SHAP):** Calculates Shapley additive values for deep sequence tensors to explain which fabric variables drive emissions.
+- **Physics-Inspired Dual-Phase Simulation:** Incorporates both exponential decay (initial loose-fiber shedding) and progressive structural wear accumulation.
+- **Garment Shelf-Life Calculator:** Predicts the exact wash cycle where garment emissions reach operational stability ($20\,\text{mg}$ limit).
+- **Multi-Fiber Blend Weighting:** Computes composite shedding curves by mathematically weighting model predictions across custom blend percentages (e.g. 60% Cotton / 40% Polyester):
+  $$\text{Release}_{\text{blend}}(t) = \sum_{i} w_i \cdot \text{LSTM}(f_i, t)$$
+- **Explainable AI (SHAP):** Calculates Shapley additive values for deep sequence tensors to explain which variables drive emissions.
 - **High-Throughput Asynchronous API:** FastAPI server with Pydantic v2 schemas and Scikit-Learn pipeline transforms for sub-millisecond inference.
 - **Interactive UI with Dynamic Visualizations:** React 19 + Recharts responsive dashboard plotting predicted release curves, shelf-life indicators, and feature importance charts.
-- **Zero-Friction Cross-Platform Compatibility:** Runs identically on macOS (Apple Silicon M-series & Intel), Windows 10/11 (PowerShell & Command Prompt), and Linux distributions.
-- **🛒 Chrome Browser Extension (Manifest V3):** Real-time shopping assistant that extracts fabric specs on Amazon, Myntra, and custom stores, injects an isolated Shadow DOM **A–E Grade badge**, provides an interactive **50-wash lifecycle curve** with wash habit simulation sliders, and estimates cart-level microplastic impact. See [extension/README.md](file:///c:/Users/sahil/Desktop/7th%20sem/AML/microfiber-shelf-life/extension/README.md).
+- **🛒 Chrome Browser Extension (Manifest V3):**
+  - **CSS-Isolated Shadow DOM Badge:** Injected next to product prices on Amazon, Myntra, and custom stores without CSS collision.
+  - **Slide-Out Side Panel:** Pure SVG 50-wash lifecycle curve with stabilization plateau markers.
+  - **Interactive Wash Habit Simulator:** Sliders for Wash Temperature ($20^\circ\text{C}-60^\circ\text{C}$), Agitation ($0.5\times-1.5\times$), and Detergent dropdown dynamically re-calculate scores in real time.
+  - **Greener Swaps & Mitigation:** Cold wash savings, natural fiber recommendations, and wash-bag efficiency.
+  - **Search Listing Batch Mode:** Automatically badges product cards on search/category pages with cached mini grade pills.
+  - **Basket Microfiber Impact:** Aggregates cumulative 50-wash microplastic emissions across shopping cart items.
+- **Zero-Friction Cross-Platform Compatibility:** Runs identically on macOS (Apple Silicon M-series & Intel), Windows 10/11, and Linux distributions.
 
 ---
 
@@ -87,12 +108,12 @@ This project delivers an end-to-end engineering solution:
                                                     └─────────────────┘
 ```
 
-1. **Environmental Scale:** Up to $700,000$ microfibers can be released in a single 6 kg domestic wash cycle. Synthetic microfibers represent over $35\%$ of all primary microplastics entering marine environments.
-2. **Structural Degradation:** Laundering is a destructive process involving:
-   - **Mechanical Agitation:** Drum rotation, centrifugal shear, and garment-to-garment friction weaken yarn binds.
-   - **Hydrothermal Stress:** Elevated wash water temperatures ($30^\circ\text{C}$ to $60^\circ\text{C}$) soften synthetic polymers, lowering tensile elasticity.
-   - **Chemical Agitation:** Surfactants and enzymatic detergents strip finishing coatings and accelerate fiber breakage.
-3. **The Need for Predictive Shelf-Life:** Textile engineers, sustainable apparel brands, and certifiers require predictive modeling to design durable textiles, optimize care instructions, and quantify garment operational life before degradation exceeds acceptable environmental thresholds.
+1. **Environmental Scale:** Up to $700,000$ microfibers can be released in a single 6 kg domestic wash cycle. Synthetic microfibers represent over $35\%$ of primary microplastics entering marine environments.
+2. **Structural Degradation Mechanics:**
+   - **Mechanical Agitation:** Drum rotation, centrifugal shear, and garment friction break surface filaments.
+   - **Hydrothermal Stress:** Elevated temperatures ($30^\circ\text{C}$ to $60^\circ\text{C}$) soften synthetic polymers, lowering tensile elasticity.
+   - **Chemical Degradation:** Surfactants and enzymatic builders accelerate chemical weakening of fiber coatings.
+3. **The Solution:** Quantifying 50-wash shedding trajectories enables consumers to buy durable garments, optimize laundering habits, and reduce plastic emissions at the source.
 
 ---
 
@@ -102,7 +123,7 @@ The sequence dataset engine (`src/generate_sequence_data.py`) simulates 75,000 w
 
 ### 1. Base Release Formulation
 
-At any given laundering event, the baseline fiber shedding potential ($\text{Release}_{\text{base}}$) is governed by fabric physical parameters and wash condition multipliers:
+Baseline fiber shedding potential ($\text{Release}_{\text{base}}$) is governed by physical parameters and laundering coefficients:
 
 $$\text{Release}_{\text{base}} = 80 \times F_{\text{fabric}} \times F_{\text{weave}} \times F_{\text{detergent}} \times F_{\text{temp}} \times F_{\text{weight}} \times F_{\text{yarn}} \times M_{\text{agitation}}$$
 
@@ -127,112 +148,80 @@ Where:
   $$F_{\text{weight}} = \frac{\text{Fabric Weight (gsm)}}{150}$$
 - **Yarn Count Scaling ($F_{\text{yarn}}$):**
   $$F_{\text{yarn}} = \frac{100}{\text{Yarn Count (Ne)}}$$
-  *(Note: In indirect yarn count systems like English Cotton Count (Ne), lower numbers indicate coarser, heavier yarns with higher fiber mass available for shedding).*
+  *(Lower English Cotton Count $N_e$ indicates coarser, heavier yarns with higher mass available for shedding).*
 - **Mechanical Agitation ($M_{\text{agitation}}$):** Continuous machine shear coefficient $\in [0.5, 1.5]$.
 
 ### 2. Temporal Dynamics: Dual-Phase Wear Process
 
-Physical degradation exhibits two competing physical mechanisms over the lifetime $t \in [1, 50]$ of the garment:
+Physical degradation exhibits two competing physical mechanisms over lifetime $t \in [1, 50]$:
 
 $$\text{Release}(t) = \underbrace{\text{Release}_{\text{base}} \cdot e^{-0.05 \cdot t}}_{\text{Phase 1: Exponential Washout}} + \underbrace{1.5 \cdot \text{Wear}_{\text{cumulative}}(t)}_{\text{Phase 2: Structural Wear Accumulation}} + \epsilon$$
 
 Where:
-- **Phase 1 (Surface Washout):** Residual cut ends, loose fibers, and manufacturing debris rapidly diminish according to exponential decay factor $e^{-0.05 \cdot t}$.
-- **Phase 2 (Cumulative Structural Wear):** As laundering progresses, repeated shear and hydrolytic stress damage yarn structure:
+- **Phase 1 (Surface Washout):** Residual cut ends and loose surface debris decay according to $e^{-0.05 \cdot t}$.
+- **Phase 2 (Cumulative Structural Wear):** Repeated mechanical shear and hydrolytic stress damage yarn structure:
   $$\text{Wear}_{\text{cumulative}}(t) = \sum_{k=1}^{t} 0.01 \cdot \text{Release}_{\text{base}}$$
-- **Stochastic Noise ($\epsilon$):** $\epsilon \sim \mathcal{N}(0, \sigma=2)$ accounts for experimental measurement variation.
+- **Stochastic Noise ($\epsilon$):** $\epsilon \sim \mathcal{N}(0, \sigma=2)$ accounts for experimental variation.
 - **Physical Boundary:** $\text{Release}(t) \ge 0.1\,\text{mg}$.
 
 ### 3. Shelf-Life Metric Definition
 
-The operational **Shelf-Life** $S$ of a garment is defined as the first wash cycle $t^*$ where microfiber release reaches or drops below the critical stabilization threshold $\tau = 20\,\text{mg}$:
+The operational **Shelf-Life** $S$ is defined as the first wash cycle $t^*$ where microfiber release stabilizes at or below $\tau = 20\,\text{mg}$:
 
 $$S = \min \{ t \in [1, 50] \mid \text{Release}(t) \le 20\,\text{mg} \}$$
-
-If $\text{Release}(t) > 20\,\text{mg}$ throughout all 50 cycles, the garment is designated as "Threshold Not Reached" (continuous degradation).
 
 ---
 
 ## 🧠 Machine Learning Architecture
 
 ```
-Static Features (15-dim)
-  ├── 5 x Fabric Type (One-Hot)
-  ├── 3 x Weave Type (One-Hot)
-  ├── 3 x Detergent Type (One-Hot)
-  └── 4 x StandardScaled Continuous
-Dynamic Feature (1-dim)
-  └── Scaled Wash Number (t=1..50)
-                │
-                ▼
-  [Input Tensor: Batch × Seq_Len × 16]
-                │
-                ▼
-  ┌─────────────────────────────────┐
-  │  PyTorch LSTM (Layer 1, h=64)    │
-  └─────────────────────────────────┘
-                │
-                ▼
-  ┌─────────────────────────────────┐
-  │  PyTorch LSTM (Layer 2, h=64)    │
-  └─────────────────────────────────┘
-                │
-                ▼
-  ┌─────────────────────────────────┐
-  │  Linear Projection (64 -> 1)    │
-  └─────────────────────────────────┘
-                │
-                ▼
-  [Output: Continuous Release (mg)]
+Sequential Input Tensor: [Batch=1, Seq=50, Features=16]
+        │
+        ▼
+┌────────────────────────────────────────────────────────┐
+│ PyTorch LSTM Layer 1 (Input=16, Hidden=64, Dropout=0.0)│
+└────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌────────────────────────────────────────────────────────┐
+│ PyTorch LSTM Layer 2 (Input=64, Hidden=64)             │
+└────────────────────────────────────────────────────────┘
+        │
+        ▼
+┌────────────────────────────────────────────────────────┐
+│ Fully-Connected Linear Layer: nn.Linear(64, 1)         │
+└────────────────────────────────────────────────────────┘
+        │
+        ▼
+Target Inverse Scaling ──► Predicted Microfiber Release per Wash (mg)
 ```
-
-### Why PyTorch LSTM over Classical Tabular Models?
-
-In early experimentation (`src/train.py`), classical tabular regression models were trained on static snapshot data (`data/microfiber_dataset.csv`):
-
-| Model Architecture | MAE (mg) | RMSE (mg) | $R^2$ Score | Temporal Awareness |
-| :--- | :---: | :---: | :---: | :---: |
-| **Linear Regression** | 24.12 | 31.85 | 0.812 | ❌ None (Memoryless) |
-| **Random Forest Regressor** | 11.45 | 16.20 | 0.951 | ❌ None (Memoryless) |
-| **Gradient Boosting Regressor** | 9.80 | 14.10 | 0.963 | ❌ None (Memoryless) |
-| **Extra Trees Regressor** | 10.15 | 14.88 | 0.959 | ❌ None (Memoryless) |
-| **PyTorch LSTM (Sequence Model)** | **< 3.20** | **< 4.50** | **> 0.985** | **✅ Fully Stateful Time-Series** |
-
-**The Classical Regression Flaw:** Standard algorithms treat wash cycle $25$ as an independent, isolated point. They cannot model cumulative internal fabric stress or carry forward the hidden degradation state from washes $1 \dots 24$.
-
-**The LSTM Solution:** The Long Short-Term Memory cell maintains an internal cell state $c_t$ and hidden state $h_t$:
-
-$$f_t = \sigma(W_f x_t + U_f h_{t-1} + b_f)$$
-$$i_t = \sigma(W_i x_t + U_i h_{t-1} + b_i)$$
-$$\tilde{c}_t = \tanh(W_c x_t + U_c h_{t-1} + b_c)$$
-$$c_t = f_t \odot c_{t-1} + i_t \odot \tilde{c}_t$$
-$$o_t = \sigma(W_o x_t + U_o h_{t-1} + b_o)$$
-$$h_t = o_t \odot \tanh(c_t)$$
-
-This internal state persistence directly mirrors physical fabric degradation: previous washes irreversibly weaken internal yarn bonds.
 
 ### Neural Network Hyperparameters & Pipeline Details
 
 - **Model Class:** `MicrofiberLSTM` (`backend/main.py`, `src/train_lstm.py`)
-- **Input Size:** 16 features (11 one-hot categorical + 4 continuous scaled + 1 wash number scaled)
+- **Input Dimensions:** 16 features:
+  - 5 fabric one-hot features (`Acrylic`, `Cotton`, `Cotton-Poly Blend`, `Nylon`, `Polyester`)
+  - 3 weave one-hot features (`Plain`, `Satin`, `Twill`)
+  - 3 detergent one-hot features (`Eco`, `Enzyme`, `Standard`)
+  - 4 continuous scaled features (`Fabric_Weight_gsm`, `Yarn_Count`, `Wash_Temperature_C`, `Mechanical_Agitation`)
+  - 1 scaled wash cycle sequence number ($t \in [1, 50]$)
 - **Hidden Units:** 64
 - **Stacked Layers:** 2 layers
 - **Batch Processing:** `batch_first=True`
-- **Output Layer:** `nn.Linear(64, 1)` projecting each sequence step to continuous predicted release
+- **Output Layer:** `nn.Linear(64, 1)` projecting sequence hidden states to continuous release
 - **Loss Function:** Mean Squared Error (`nn.MSELoss()`)
 - **Optimizer:** Adam (`lr=0.005`)
-- **Epochs:** 20 epochs across 1,200 training fabric sequences (300 validation sequences)
-- **Preprocessing Artifacts:**
-  - `models/preprocessor.pkl`: ColumnTransformer (`StandardScaler` on continuous features, `OneHotEncoder` on categories)
-  - `models/wash_scaler.pkl`: StandardScaler applied specifically to temporal wash index sequence
-  - `models/target_scaler.pkl`: StandardScaler fitted to target values (`Microfiber_Release_mg`) to maintain zero-mean unit-variance gradient dynamics
-  - `models/lstm_model.pth`: Serialized PyTorch state dictionary
+- **Pretrained Artifacts in `models/`:**
+  - `models/lstm_model.pth`: Serialized PyTorch weights
+  - `models/preprocessor.pkl`: Scikit-learn `ColumnTransformer`
+  - `models/wash_scaler.pkl`: Temporal wash sequence `StandardScaler`
+  - `models/target_scaler.pkl`: Target emission `StandardScaler`
 
 ---
 
 ## 🔍 Explainable AI (SHAP)
 
-Deep neural networks are frequently criticized as "black boxes." In this project, model interpretability is implemented via **SHAP (SHapley Additive exPlanations)** in `src/explain_shap.py`.
+Deep neural network decisions are interpreted via **SHAP (SHapley Additive exPlanations)** in `src/explain_shap.py`.
 
 ```
                     ┌─────────────────────────┐
@@ -247,14 +236,10 @@ Inverse thickness         Satin float exposure        Polymer softening
 drives fiber volume       increases friction          accelerates shear
 ```
 
-1. **Sequence Wrapper:** A custom PyTorch module (`WrappedModel`) evaluates the gradient of the terminal sequence step ($t=50$) with respect to the input sequence tensor:
-   $$\phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|!(|F| - |S| - 1)!}{|F|!} \left[ f_x(S \cup \{i\}) - f_x(S) \right]$$
-2. **DeepExplainer:** Leverages `shap.DeepExplainer` with a representative background sequence dataset to compute exact feature importance across time steps.
-3. **Key Findings:**
-   - **Yarn Count (Ne):** Highest marginal attribution. Lower yarn counts (coarser yarns) shed drastically more mass per cycle.
-   - **Weave Type:** Satin and twill structures yield higher shedding than plain weave due to longer unprotected yarn floats.
-   - **Temperature:** Elevated temperatures ($50^\circ\text{C}$–$60^\circ\text{C}$) accelerate wear slope over successive washings.
-   - **Visual Asset:** The resulting attribution summary is automatically generated and served directly in the dashboard (`frontend/public/shap_summary.png`).
+- **Sequence Attribution:** Evaluates gradients of the terminal sequence step ($t=50$) with respect to input sequences:
+  $$\phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|!(|F| - |S| - 1)!}{|F|!} \left[ f_x(S \cup \{i\}) - f_x(S) \right]$$
+- **Primary Influences:** Coarse yarns (low $N_e$) have the highest marginal attribution. Satin and twill weave expose more loose surface fiber than plain weaves. Higher temperatures soften synthetic fibers, accelerating degradation.
+- **Visual Artifact:** Generated automatically at `frontend/public/shap_summary.png`.
 
 ---
 
@@ -262,32 +247,41 @@ drives fiber volume       increases friction          accelerates shear
 
 ```mermaid
 flowchart TD
-    subgraph UI ["Frontend (React 19 + Vite + TailwindCSS)"]
+    subgraph EXT ["Chrome Browser Extension (MV3)"]
+        E1[Shopping Page on Amazon / Myntra / Demo] --> E2[adapters/*.js]
+        E2 --> E3[extractors.js: Regex Composition Parser]
+        E3 --> E4[background.js: Service Worker Proxy]
+        E4 -->|POST /score| API
+        API -->|JSON Score & Curve| E4
+        E4 --> E5[content.js: Shadow DOM Injection]
+        E5 --> E6[Product Price Badge: Grade A-E]
+        E5 --> E7[Slide-Out Side Panel: Pure SVG 50-Wash Chart]
+        E5 --> E8[Live Sliders: Temp, Agitation, Detergent]
+        E5 --> E9[Listing Page Batch Card Badging]
+    end
+
+    subgraph UI ["Web Dashboard (React 19 + Vite)"]
         A[User Inputs Fabric Specs & Wash Conditions] --> B[PredictionForm.jsx]
-        B --> C[Asynchronous Fetch Request]
+        B --> C[Asynchronous API Fetch]
         H[Recharts 50-Cycle Trajectory] <--> G[App.jsx State Manager]
         I[KPI Metric Cards: Release & Shelf-Life] <--> G
         J[SHAP Feature Importance Plot] <--> G
     end
 
-    subgraph API ["Backend (FastAPI Server @ :8000)"]
-        C -->|POST /predict & POST /shelf-life| D[FastAPI Endpoints]
-        D --> E[Pydantic Validation: FabricInput]
-        E --> F[Sequence Tensor Generator]
+    subgraph API ["FastAPI Backend Engine @ :8000"]
+        C & E4 --> D[FastAPI Endpoints]
+        D -->|/predict| EP1[Point Release]
+        D -->|/shelf-life| EP2[50-Cycle Trajectory]
+        D -->|/extract| EP3[Textile Synonym Parser]
+        D -->|/score| EP4[Blend-Weighted Multi-Fiber Inference]
     end
 
     subgraph ML ["PyTorch Deep Learning Engine"]
-        F --> K[Load Scikit-Learn Preprocessors]
+        EP1 & EP2 & EP4 --> K[Load Scikit-Learn Preprocessors]
         K --> L[Construct Input Tensor: 1 x Seq x 16]
-        L --> M[MicrofiberLSTM Model Forward Pass]
+        L --> M[MicrofiberLSTM Forward Pass]
         M --> N[Inverse Scaling via target_scaler]
-        N --> O[Compute Release at Step N]
-        N --> P[Compute Threshold Intersect at 20 mg]
     end
-
-    O --> D
-    P --> D
-    D -->|JSON Response| G
 ```
 
 ---
@@ -298,73 +292,75 @@ flowchart TD
 microfiber-shelf-life/
 │
 ├── backend/                             # High-performance FastAPI server
-│   ├── __pycache__/                     # Compiled Python bytecode cache
-│   └── main.py                          # API routes, Pydantic schemas, and PyTorch inference engine
+│   └── main.py                          # Endpoints: /score, /extract, /predict, /shelf-life
 │
-├── frontend/                            # React 19 single-page application
-│   ├── public/                          # Static public assets
-│   │   ├── favicon.svg                  # Browser favicon
-│   │   ├── icons.svg                    # SVG iconography
-│   │   └── shap_summary.png             # Precomputed SHAP feature importance chart
+├── extension/                           # Manifest V3 Chrome Browser Extension
+│   ├── manifest.json                    # Extension permissions, host permissions & configuration
+│   ├── background.js                    # MV3 Service Worker (API proxying & chrome.storage)
+│   ├── content.js                       # Shadow DOM badge, SVG chart, live sliders & panel
+│   ├── extractors.js                    # Regex parsers for composition, blends, GSM, weave, yarn count
+│   ├── generate_icons.js                # Icon generator utility
+│   ├── icons/                           # 16x16, 48x48, 128x128 extension icons
+│   ├── popup/                           # Toolbar popup (popup.html, popup.js, popup.css)
+│   ├── adapters/                        # E-commerce DOM adapters
+│   │   ├── base.js                      # Self-registering adapter registry
+│   │   ├── amazon.js                    # Amazon.in / Amazon.com desktop, mobile & responsive adapter
+│   │   ├── myntra.js                    # Myntra.com product & listing adapter
+│   │   └── demo-shop.js                 # Local demo store adapter (data-mf-* attributes)
+│   ├── tests/                           # Extension automated test suite
+│   │   ├── test_extractors.js           # Node.js regex unit tests (7 passed)
+│   │   └── test_backend_api.py          # Python integration tests for FastAPI endpoints (5 passed)
+│   └── README.md                        # Extension-specific developer documentation
+│
+├── demo-shop/                           # Interactive local test store
+│   └── index.html                       # 6 diverse garments, PDP views, search cards, and checkout
+│
+├── frontend/                            # React 19 single-page dashboard
+│   ├── public/                          # Static public assets (shap_summary.png, icons)
 │   ├── src/                             # React application source code
-│   │   ├── components/                  # Modular UI components
-│   │   │   ├── Header.jsx               # Header banner with real-time API status badge
-│   │   │   ├── MicrofiberChart.jsx      # Recharts SVG time-series curve with threshold line
-│   │   │   ├── PredictionForm.jsx       # Parameter configuration form with instant validation
-│   │   │   └── ResultCard.jsx           # KPI display cards for current release and shelf-life
-│   │   ├── App.css                      # Bespoke design tokens, layout styling, and CSS variables
-│   │   ├── App.jsx                      # Primary container, API orchestration, and error handling
-│   │   ├── index.css                    # Base styling and web fonts
-│   │   └── main.jsx                     # React DOM root entry point
-│   ├── index.html                       # HTML5 template
-│   ├── package.json                     # Node.js dependencies and script definitions
-│   ├── vite.config.js                   # Vite bundler configuration with Tailwind plugin
-│   └── README.md                        # Frontend-specific notes
+│   │   ├── components/                  # Header, PredictionForm, ResultCard, MicrofiberChart
+│   │   ├── App.jsx                      # App root & API orchestration
+│   │   ├── App.css                      # Styling tokens & layout
+│   │   └── main.jsx                     # Vite mount point
+│   ├── package.json                     # Frontend dependencies
+│   └── vite.config.js                   # Vite configuration
 │
-├── src/                                 # Machine learning modeling and data pipeline scripts
-│   ├── generate_sequence_data.py        # 50-wash time-series synthetic physics simulator
-│   ├── train_lstm.py                    # PyTorch LSTM network training and checkpoint serializer
-│   ├── explain_shap.py                  # SHAP DeepExplainer interpretability generator
-│   ├── generate_data.py                 # Baseline snapshot data generator (3,000 tabular rows)
-│   ├── train.py                         # Classical ML benchmarking (RF, Gradient Boost, Extra Trees)
-│   ├── preprocess.py                    # Scikit-learn data preprocessing pipeline validation
-│   └── predict.py                       # CLI inference test for classical baseline models
+├── src/                                 # Data generators & ML scripts
+│   ├── generate_sequence_data.py        # 50-wash sequence dataset generator (75,000 samples)
+│   ├── train_lstm.py                    # PyTorch LSTM network training script
+│   ├── explain_shap.py                  # SHAP DeepExplainer interpretability script
+│   ├── generate_data.py                 # Baseline tabular snapshot data generator
+│   └── train.py                         # Classical ML baseline benchmarks
 │
-├── models/                              # Serialized model weights and transformer artifacts
-│   ├── lstm_model.pth                   # PyTorch state dict for trained MicrofiberLSTM (2-layer, h=64)
-│   ├── preprocessor.pkl                 # Scikit-learn ColumnTransformer (StandardScaler + OneHotEncoder)
-│   ├── wash_scaler.pkl                  # StandardScaler fitted to temporal wash indices
-│   └── target_scaler.pkl                # StandardScaler fitted to target Microfiber_Release_mg
+├── models/                              # Pretrained weights and scalers
+│   ├── lstm_model.pth                   # PyTorch weights for MicrofiberLSTM (2-layer, h=64)
+│   ├── preprocessor.pkl                 # ColumnTransformer (StandardScaler + OneHotEncoder)
+│   ├── wash_scaler.pkl                  # Temporal wash index scaler
+│   └── target_scaler.pkl                # Target emission scaler
 │
 ├── data/                                # Generated datasets
 │   ├── microfiber_sequence_dataset.csv  # 75,000 sequence rows (1,500 fabrics x 50 washes)
 │   └── microfiber_dataset.csv           # 3,000 tabular snapshot records
 │
-├── notebooks/                           # Exploratory data analysis scripts
-│   └── exploration.py                   # Seaborn scatter plot generator for wash vs. release
-│
-├── app.py                               # Application entry point placeholder
-├── requirements.txt                     # Complete Python dependency specification
-├── requirements_clean.txt               # Unpinned base dependency specification
-├── .gitignore                           # Git ignore rules for virtual environments and dependencies
-└── README.md                            # Comprehensive project documentation (this file)
+├── requirements.txt                     # Pinned Python package dependencies
+├── requirements_clean.txt               # Unpinned clean dependencies
+└── README.md                            # Comprehensive project guide (this file)
 ```
 
 ---
 
-## 💻 Cross-Platform Installation & Setup (Mac & Windows)
+## 💻 Cross-Platform Installation & Setup Guide
 
-Follow this step-by-step guide to clone, install, and run this project on any operating system (**macOS Apple Silicon / Intel**, **Windows 10/11**, or **Linux**).
+This guide enables anyone to clone and run the full stack on any machine: **Windows 10/11**, **macOS (Apple Silicon M1–M4 & Intel)**, or **Linux (Ubuntu/Debian, Fedora, Arch)**.
 
 ### Prerequisites
 
-Verify that the following tools are installed on your workstation:
-
-| Prerequisite | Minimum Version | Installation Link / Command |
+| Tool | Minimum Version | Installation Link / Command |
 | :--- | :---: | :--- |
-| **Python** | `3.10` or higher | [python.org](https://www.python.org/downloads/) • macOS: `brew install python` |
+| **Python** | `3.10` or higher | [python.org](https://www.python.org/downloads/) • macOS: `brew install python` • Linux: `sudo apt install python3 python3-venv python3-pip` |
 | **Node.js & npm** | `Node v18+`, `npm v9+` | [nodejs.org](https://nodejs.org/) • macOS: `brew install node` |
 | **Git** | `2.x+` | [git-scm.com](https://git-scm.com/) |
+| **Google Chrome** | Latest | Any Chromium browser (Chrome, Edge, Brave) |
 
 ---
 
@@ -384,57 +380,56 @@ cd microfiber-shelf-life
 #### 🍏 On macOS / Linux
 
 ```bash
-# 1. Create a virtual environment named 'venv'
+# 1. Create virtual environment named 'venv'
 python3 -m venv venv
 
-# 2. Activate the virtual environment
+# 2. Activate virtual environment
 source venv/bin/activate
 
-# 3. Upgrade pip to the latest version
+# 3. Upgrade pip
 pip install --upgrade pip
 
-# 4. Install all Python dependencies
+# 4. Install dependencies
 pip install -r requirements.txt
 ```
 
-> **Note for macOS Apple Silicon (M1/M2/M3/M4):** PyTorch automatically selects native CPU/Metal Performance Shaders (MPS) without requiring any additional proprietary drivers.
-
----
+> **macOS Apple Silicon:** PyTorch automatically uses optimized CPU/Metal backend without extra configuration.
 
 #### 🪟 On Windows
 
 Open **PowerShell** or **Command Prompt** in the project root:
 
 ```powershell
-# 1. Create a virtual environment named 'venv'
+# 1. Create virtual environment named 'venv'
 python -m venv venv
 
-# 2. Activate the virtual environment
+# 2. Activate virtual environment
 # In PowerShell:
 .\venv\Scripts\Activate.ps1
 
-# (If PowerShell blocks script execution, run this once: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser)
+# (If PowerShell displays a script policy warning, run once:
+#  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser)
 
 # OR in Command Prompt (cmd.exe):
 .\venv\Scripts\activate.bat
 
-# 3. Upgrade pip to the latest version
+# 3. Upgrade pip
 python -m pip install --upgrade pip
 
-# 4. Install all Python dependencies
+# 4. Install dependencies
 pip install -r requirements.txt
 ```
 
 ---
 
-### Step 3: Frontend Setup (React & Vite)
+### Step 3: Frontend Dashboard Setup (React & Vite)
 
-Open a **separate** terminal window and navigate into the `frontend/` directory:
+Open a **second terminal window** and run:
 
 ```bash
 cd frontend
 
-# Install all Node.js dependencies
+# Install dependencies
 npm install
 ```
 
@@ -442,37 +437,120 @@ npm install
 
 ### Step 4: Running the Applications Locally
 
-You will run the **FastAPI Backend** and the **React Frontend** in two concurrent terminal windows:
+You will run the backend, frontend, and optional demo server in separate terminal windows:
 
-#### Terminal 1: Launch FastAPI Backend
+#### Terminal 1: Launch FastAPI Backend Server
 
-Make sure your virtual environment is activated (`(venv)` shown in prompt):
+Ensure `(venv)` is activated:
 
 ```bash
-# From the project root (microfiber-shelf-life/):
-python -m uvicorn backend.main:app --reload --port 8000
+# From project root (microfiber-shelf-life/):
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-- **API Base URL:** `http://127.0.0.1:8000`
-- **Interactive Swagger Documentation:** `http://127.0.0.1:8000/docs`
-- **Alternative ReDoc UI:** `http://127.0.0.1:8000/redoc`
+- **API Base:** `http://127.0.0.1:8000`
+- **Interactive Swagger Docs:** `http://127.0.0.1:8000/docs`
+- **ReDoc Documentation:** `http://127.0.0.1:8000/redoc`
 
-#### Terminal 2: Launch React Frontend
+#### Terminal 2: Launch React Web Dashboard
 
 ```bash
-# From the frontend directory (microfiber-shelf-life/frontend/):
+# From frontend directory (microfiber-shelf-life/frontend/):
 npm run dev
 ```
 
-- **Frontend Dashboard URL:** `http://localhost:5173`
+- **Dashboard URL:** `http://localhost:5173`
 
-Open your web browser and navigate to `http://localhost:5173` to explore the dashboard.
+#### Terminal 3: (Optional) Launch Local Demo Store
+
+```bash
+# From project root (microfiber-shelf-life/):
+python -m http.server 3000
+```
+
+- **Demo Store URL:** `http://localhost:3000/demo-shop/index.html`
+
+---
+
+## 🛒 Chrome Browser Extension (Manifest V3)
+
+The extension evaluates live garments as you browse e-commerce sites, parsing material compositions, running LSTM inference, and injecting sustainability badges.
+
+### How the Extension Works
+
+1. **DOM Adapter Detection:** Detects whether you are on Amazon, Myntra, or the local demo store.
+2. **Textile Feature Extraction:** Uses regex parsers in `extension/extractors.js` to extract fiber type, blend percentages, GSM, weave type, and yarn count from product titles, bullet points, technical spec tables, and descriptions.
+3. **Backend Communication:** The MV3 service worker calls `POST /score` on your local FastAPI server (`http://127.0.0.1:8000`).
+4. **Shadow DOM Injection:** Builds a custom badge next to the price element using closed Shadow DOM, ensuring complete CSS isolation from site stylesheets.
+5. **Interactive Side Panel:** Clicking the badge opens a slide-out panel with an interactive pure SVG lifecycle curve and live wash habit simulation sliders.
+
+---
+
+### Step-by-Step Installation in Chrome / Edge / Brave
+
+1. Open **Google Chrome** (or Edge/Brave).
+2. Go to the extensions management page by entering:
+   ```text
+   chrome://extensions
+   ```
+3. Enable the **Developer mode** toggle in the top-right corner.
+4. Click the **Load unpacked** button in the top-left corner.
+5. In the file picker, select the `extension/` folder inside `microfiber-shelf-life/`.
+6. The **Microfiber Score** extension is now installed. Pin it to your toolbar.
+7. Click the extension toolbar icon. You will see:
+   - Green status pill: **`● API connected`**
+   - Wash habit configuration defaults (Temperature, Agitation, Detergent, Frequency).
+
+---
+
+### Testing on Live E-Commerce (Amazon & Myntra)
+
+1. Make sure your FastAPI backend is running on `http://127.0.0.1:8000`.
+2. Open any apparel product page:
+   - **Amazon India / US:** Navigate to any clothing item (e.g. polo shirt, trousers, hoodie, fleece).
+   - **Myntra:** Navigate to any t-shirt or garment page.
+3. **On Product Pages:** Look directly below the price. You will see the **Microfiber Score Badge**:
+   - Letter Grade (**A–E**) with color ring.
+   - Cumulative 50-wash emission (e.g. `~12.65g over 50 washes`).
+   - Confidence indicator (**HIGH**, **MEDIUM**, or **LOW** depending on specs found).
+4. **Click the Badge:**
+   - The slide-out side panel appears with the **50-Wash Lifecycle Curve** and stabilization marker.
+   - Adjust the **Wash Temperature** slider (e.g., lower to $20^\circ\text{C}$) or **Mechanical Agitation** slider.
+   - The score, badge, and curve recalculate via the LSTM model in real time.
+5. **On Search Pages:** Search for `cotton t-shirt` or `fleece jacket`. Mini badges (`[Grade] [X.Xg]`) will appear on each product card.
+
+---
+
+## 🏪 Local Demo Store & Testing
+
+For testing without live internet or shopping accounts, a complete test store is included in `demo-shop/index.html`:
+
+```bash
+# Serve from project root:
+python -m http.server 3000
+```
+
+Open: **`http://localhost:3000/demo-shop/index.html`**
+
+### Test Products Included:
+
+| Product | Composition | Expected Result |
+| :--- | :--- | :--- |
+| **Pure Earth Organic Tee** | 100% Organic Cotton (140 GSM, Plain) | **Grade A** (Low shed, 100% biodegradable) |
+| **AeroTech Shell Jacket** | 100% Ripstop Nylon (160 GSM, Plain) | **Grade B** (Good, continuous filament) |
+| **Urban Comfort Hoodie** | 60% Cotton / 40% Poly (240 GSM) | **Grade C/D** (Blended microplastics) |
+| **ArcticSummit Fleece** | 100% Recycled Polyester (320 GSM) | **Grade E** (Heavy shedding microplastics) |
+| **Nordic Cable Sweater** | 100% Acrylic Soft-Spun (280 GSM) | **Grade D/E** (Staple fiber breakage) |
+| **Artisan Twill Shirt** | 100% Organic Linen (160 GSM, Twill) | **Grade A** (Natural cellulosic flax) |
+
+- **Product Detail View:** Click any item to see badge injection, adjust sliders, and explore greener swaps.
+- **Cart-Level Summary:** Click the **Cart** button in the header. The extension detects the items and injects a **Basket Microfiber Impact** banner summarizing total 50-wash microplastic emissions.
 
 ---
 
 ## 📡 API Specification & Endpoints
 
-The FastAPI backend exposes three primary REST endpoints:
+The FastAPI backend exposes the following REST endpoints:
 
 ### 1. Root Health Check
 - **Method:** `GET`
@@ -486,12 +564,125 @@ The FastAPI backend exposes three primary REST endpoints:
 
 ---
 
-### 2. Predict Release at Target Wash Cycle
+### 2. `/score` Endpoint (Comprehensive Garment Rating)
+- **Method:** `POST`
+- **Endpoint:** `/score`
+- **Description:** Accepts garment specifications or raw text, computes blend-weighted multi-fiber LSTM predictions across 50 wash cycles, assigns an A–E sustainability grade, quantifies synthetic microplastics, and returns explainability reasons and greener swaps.
+
+#### Request Schema (`application/json`):
+```json
+{
+  "Fabric_Type": "Cotton-Poly Blend",
+  "Blend": { "Cotton": 0.6, "Polyester": 0.4 },
+  "Fabric_Weight_gsm": 180.0,
+  "Yarn_Count": 30.0,
+  "Weave_Type": "Plain",
+  "Wash_Temperature_C": 40.0,
+  "Detergent_Type": "Standard",
+  "Mechanical_Agitation": 1.0,
+  "Number_of_Washes": 50,
+  "Product_Title": "Urban Comfort Poly-Cotton Athletic Hoodie",
+  "Raw_Text": "60% Cotton 40% Polyester blend 180 GSM"
+}
+```
+*(All fields are optional with intelligent fallback to physical baseline defaults).*
+
+#### Response Schema (`200 OK`):
+```json
+{
+  "grade": "C",
+  "grade_label": "Fair",
+  "color": "#ca8a04",
+  "ring_color": "#fef08a",
+  "confidence": "high",
+  "uncertainty_range": {
+    "low_g": 12.76,
+    "high_g": 15.28,
+    "margin_pct": 9
+  },
+  "cumulative_grams": 14.02,
+  "cumulative_release_mg": 14020.15,
+  "per_wash_avg_mg": 280.4,
+  "synthetic_percentage": 40,
+  "synthetic_microplastics_g": 5.61,
+  "wash_values": [1, 2, 3, "...", 50],
+  "predictions": [323.5, 318.2, "...", 245.1],
+  "cumulative_predictions": [323.5, 641.7, "...", 14020.15],
+  "estimated_shelf_life": 32,
+  "reasons": [
+    {
+      "icon": "⚠️",
+      "type": "material",
+      "title": "Synthetic fibers (40%)",
+      "text": "Cotton-Poly Blend releases non-biodegradable microplastics."
+    },
+    {
+      "icon": "🌡️",
+      "type": "wash_temp",
+      "title": "Warm wash (40°C)",
+      "text": "Warm water weakens fiber bonds, increasing shedding by up to 25%."
+    }
+  ],
+  "greener_swaps": [
+    {
+      "title": "Wash at 20°C (Cold Cycle)",
+      "potential_reduction": "Saves ~2.52g shedding over 50 washes",
+      "description": "Dropping temperature preserves garment life and reduces shedding."
+    },
+    {
+      "title": "Use a Guppyfriend Washing Bag",
+      "potential_reduction": "Filters up to 86% of microfibers",
+      "description": "Traps broken microfibers while protecting clothes from drum friction."
+    }
+  ],
+  "defaults_used": []
+}
+```
+
+#### cURL Example:
+```bash
+curl -X POST "http://127.0.0.1:8000/score" \
+     -H "Content-Type: application/json" \
+     -d '{"Blend": {"Cotton": 0.6, "Polyester": 0.4}, "Fabric_Weight_gsm": 180, "Wash_Temperature_C": 40}'
+```
+
+---
+
+### 3. `/extract` Endpoint (Textile Property Extractor)
+- **Method:** `POST`
+- **Endpoint:** `/extract`
+- **Description:** Server-side fallback parser that extracts structured fiber composition, GSM, weave, and yarn count from unstructured text.
+
+#### Request Schema:
+```json
+{
+  "text": "Men 60% Cotton 40% Polyester Athletic T-Shirt 180 GSM Plain Weave"
+}
+```
+
+#### Response Schema:
+```json
+{
+  "fabric_type": "Cotton-Poly Blend",
+  "blend": {
+    "Cotton": 0.6,
+    "Polyester": 0.4
+  },
+  "gsm": 180.0,
+  "weave": "Plain",
+  "yarn_count": null,
+  "confidence": "high"
+}
+```
+
+---
+
+### 4. `/predict` (Release at Target Wash Cycle)
 - **Method:** `POST`
 - **Endpoint:** `/predict`
-- **Description:** Generates a sequence tensor up to `Number_of_Washes` and returns the expected microfiber release for that specific cycle.
+- **Description:** Single wash cycle prediction using standard `FabricInput`.
 
-#### Request Body (`application/json`):
+#### Request Schema:
 ```json
 {
   "Fabric_Type": "Polyester",
@@ -505,7 +696,7 @@ The FastAPI backend exposes three primary REST endpoints:
 }
 ```
 
-#### Response (`200 OK`):
+#### Response:
 ```json
 {
   "predicted_microfiber_release_mg": 128.45
@@ -514,12 +705,12 @@ The FastAPI backend exposes three primary REST endpoints:
 
 ---
 
-### 3. Estimate Complete 50-Wash Trajectory & Shelf-Life
+### 5. `/shelf-life` (50-Wash Sequence & Threshold)
 - **Method:** `POST`
 - **Endpoint:** `/shelf-life`
-- **Description:** Evaluates the garment over all 50 sequential washes, identifies the cycle where emission drops to or below the $20\,\text{mg}$ limit, and returns the full curve.
+- **Description:** Evaluates garment across all 50 sequential washes against the $20\,\text{mg}$ limit.
 
-#### Request Body (`application/json`):
+#### Request Schema:
 ```json
 {
   "Fabric_Type": "Cotton",
@@ -533,44 +724,54 @@ The FastAPI backend exposes three primary REST endpoints:
 }
 ```
 
-#### Response (`200 OK`):
+#### Response:
 ```json
 {
-  "wash_values": [1, 2, 3, 4, 5, "...", 50],
-  "predictions": [78.23, 74.12, 69.85, 66.20, "...", 19.45],
+  "wash_values": [1, 2, "...", 50],
+  "predictions": [78.23, 74.12, "...", 19.45],
   "threshold": 20,
   "estimated_shelf_life": 48
 }
 ```
 
-#### cURL Example for Testing:
+---
+
+## 🧪 Automated Testing Suite
+
+The repository includes test suites for both extension regex parsers and backend API routes:
+
+### 1. Extractor Unit Tests (Node.js)
+Validates fabric identification, blend percentage parsing, GSM, weave structures, and yarn count:
+
 ```bash
-curl -X POST "http://127.0.0.1:8000/shelf-life" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "Fabric_Type": "Polyester",
-       "Fabric_Weight_gsm": 180,
-       "Yarn_Count": 60,
-       "Weave_Type": "Plain",
-       "Wash_Temperature_C": 40,
-       "Detergent_Type": "Standard",
-       "Mechanical_Agitation": 1.0,
-       "Number_of_Washes": 10
-     }'
+node extension/tests/test_extractors.js
 ```
+*Output: 7 passed, 0 failed.*
+
+### 2. Backend API Integration Tests (Python)
+Validates `/extract`, `/score` (blend & defaults fallback), `/predict`, and `/shelf-life`:
+
+```bash
+# On Windows:
+venv\Scripts\python.exe extension/tests/test_backend_api.py
+
+# On macOS / Linux:
+python extension/tests/test_backend_api.py
+```
+*Output: 5 passed, 0 failed.*
 
 ---
 
 ## 🔄 Data Generation & Model Retraining Workflow
 
-All data generation and model training scripts can be executed independently from the command line:
+All data synthesis, model training, and explainability scripts can be run from the command line:
 
 ```bash
-# 1. Regenerate the 75,000-sample sequence dataset
+# 1. Regenerate synthetic 75,000-wash sequence dataset
 python src/generate_sequence_data.py
-# Output: data/microfiber_sequence_dataset.csv (1,500 fabrics x 50 cycles)
+# Output: data/microfiber_sequence_dataset.csv
 
-# 2. Retrain the PyTorch LSTM sequence model
+# 2. Retrain the PyTorch LSTM model and serialize scalers
 python src/train_lstm.py
 # Output:
 #   - models/lstm_model.pth (Model weights)
@@ -578,13 +779,13 @@ python src/train_lstm.py
 #   - models/wash_scaler.pkl (Temporal scaler)
 #   - models/target_scaler.pkl (Target scaler)
 
-# 3. Regenerate the SHAP Explainability plot
+# 3. Regenerate the SHAP attribution plot
 python src/explain_shap.py
 # Output: frontend/public/shap_summary.png
 
-# 4. (Optional) Run the classical baseline regression comparison
-python src/generate_data.py  # Generates 3,000 snapshot rows
-python src/train.py          # Trains RF, Gradient Boosting, Extra Trees
+# 4. (Optional) Run classical ML benchmark comparison
+python src/generate_data.py  # Generates 3,000 snapshot records
+python src/train.py          # Trains Random Forest, Gradient Boosting, Extra Trees
 ```
 
 ---
@@ -621,56 +822,52 @@ The web client (`frontend/`) is built with **React 19**, **Vite 8**, **Tailwind 
 │         Wash 1      10     20     30     40     50                     │
 ├────────────────────────────────────────────────────────────────────────┤
 │ 03 / AI EXPLAINABILITY (SHAP Feature Importance Summary)               │
-│ [ Horizontal bar plot indicating relative marginal factor impacts ]   │
+│ [ Horizontal bar plot indicating relative factor impacts ]             │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-1. **Reactive Parameters:** Dynamic sliders and dropdowns configure fabric parameters, yarn geometry, mechanical shear, and wash temperatures.
+1. **Reactive Parameters:** Sliders and dropdowns configure fabric parameters, yarn geometry, agitation, and wash temperatures.
 2. **Real-time Dual KPI Cards:**
-   - **Predicted Release (mg):** Microfiber shed amount for the exact requested wash cycle.
-   - **Estimated Shelf-Life (washes):** Number of laundering cycles before reaching the $20\,\text{mg}$ sustainability threshold.
-3. **Interactive Recharts Visualization:** Fluid SVG graph plotting the continuous 50-wash decay and wear curve against the reference threshold.
-4. **Embedded SHAP Explainability:** Informs the user which physical attributes (e.g., Yarn Count vs. Weave) contributed most heavily to degradation.
+   - **Predicted Release (mg):** Microfiber shed amount for the requested wash cycle.
+   - **Estimated Shelf-Life (washes):** Number of laundering cycles before reaching the $20\,\text{mg}$ limit.
+3. **Interactive Recharts Visualization:** Fluid SVG graph plotting continuous 50-wash decay against the reference limit.
+4. **Embedded SHAP Explainability:** Informs the user which physical attributes contributed most heavily to degradation.
 
 ---
 
 ## 🛠️ Troubleshooting & FAQs
 
-### 1. `ModuleNotFoundError: No module named 'fastapi'` or `'torch'`
-**Solution:** Ensure your virtual environment is active before starting the server. Look for `(venv)` in your terminal prompt. If missing, run:
-- macOS/Linux: `source venv/bin/activate && pip install -r requirements.txt`
-- Windows: `.\venv\Scripts\Activate.ps1 && pip install -r requirements.txt`
+### 1. Extension displays `API 422: Unprocessable Entity`
+**Solution:** Ensure you are using the updated `backend/main.py`. Fields in `ScoreRequest` must use `Optional[...] = None` to accept null values for unlisted specs. Then click **Clear all** and **🔄 Reload** on `chrome://extensions`.
 
-### 2. Windows PowerShell: `Execution of scripts is disabled on this system`
-**Solution:** PowerShell security settings restrict script execution by default. Run this command once in PowerShell:
+### 2. Badge does not appear on an Amazon page
+**Solution:**
+- Amazon product URLs come in several formats: `/dp/ASIN`, `/gp/product/ASIN`, and `/gp/aw/d/ASIN` (mobile/responsive layout). The updated `amazon.js` supports all three.
+- After saving adapter changes, always reload the extension at `chrome://extensions` and refresh the shopping page with **`F5`** / **`Ctrl + R`**.
+
+### 3. Windows PowerShell: `Execution of scripts is disabled on this system`
+**Solution:** PowerShell restricts script execution by default. Run this once in PowerShell:
 ```powershell
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 Then rerun `.\venv\Scripts\Activate.ps1`.
 
-### 3. Port `8000` or `5173` is already in use
+### 4. `ModuleNotFoundError: No module named 'torch'` or `'fastapi'`
+**Solution:** Ensure your virtual environment is active before starting the server. Look for `(venv)` in your terminal prompt. If missing, activate it:
+- macOS/Linux: `source venv/bin/activate && pip install -r requirements.txt`
+- Windows: `.\venv\Scripts\Activate.ps1 && pip install -r requirements.txt`
+
+### 5. Port `8000` or `5173` is already in use
 **Solution:**
 - To run FastAPI on a different port:
   ```bash
-  python -m uvicorn backend.main:app --reload --port 8080
+  python -m uvicorn backend.main:app --host 127.0.0.1 --port 8080 --reload
   ```
-- If running on port `8080`, create a `.env` file in `frontend/` with:
-  ```env
-  VITE_API_URL=http://127.0.0.1:8080
-  ```
+- Update extension `apiUrl` in `extension/background.js` or via the extension popup settings.
 - To run Vite on a different port:
   ```bash
-  npm run dev -- --port 3000
+  npm run dev -- --port 3001
   ```
-
-### 4. CORS Errors in Browser Console
-**Solution:** `backend/main.py` is configured with `CORSMiddleware` with `allow_origins=["*"]`. Ensure your backend server is actively running on `http://127.0.0.1:8000` and reachable.
-
-### 5. `models/lstm_model.pth` Not Found
-**Solution:** Model checkpoints are pre-committed to the repository in `models/`. If missing or corrupted, retrain using:
-```bash
-python src/train_lstm.py
-```
 
 ---
 
